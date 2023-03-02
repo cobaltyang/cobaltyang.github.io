@@ -9,47 +9,6 @@
       </categories>
   </entry>
   <entry>
-    <title>TensorFlow2 读写matlab变量 &amp; 张量操作</title>
-    <url>/2023/02/28/matlab/</url>
-    <content><![CDATA[<blockquote>
-<p>在科研中，matlab对矩阵处理有优势，而python语言对神经网络热门框架，譬如TensorFlow、Pytorch等都支持，所以难免会有需要跨平台处理。本文主要分享一种简便的处理方法：在.mat格式的文件中写入读取数据，因为.mat格式matlab和python都支持。</p>
-</blockquote>
-<h4 id="一、读写matlab变量"><a href="#一、读写matlab变量" class="headerlink" title="一、读写matlab变量"></a>一、读写matlab变量</h4><ul>
-<li>python中读写.mat数据文件</li>
-</ul>
-<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> scipy.io <span class="keyword">as</span> io</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将.mat文件读取为字典变量InputData</span></span><br><span class="line">InputData = io.loadmat(<span class="string">&#x27;MatlabData.mat&#x27;</span>)</span><br><span class="line"><span class="comment"># 从字典变量中读取变量</span></span><br><span class="line">A = tf.constant(InputData[<span class="string">&#x27;A&#x27;</span>])</span><br><span class="line">A = tf.cast(A, dtype = tf.float32)</span><br><span class="line">B = tf.constant(InputData[<span class="string">&#x27;B&#x27;</span>]) </span><br><span class="line">......</span><br><span class="line">A = np.mat(A.numpy())</span><br><span class="line">B = np.mat(B.numpy())</span><br><span class="line"><span class="comment"># 将变量A保存为X，将变量B保存为Y，并写入到.mat文件</span></span><br><span class="line">io.savemat(<span class="string">&#x27;PythonData.mat&#x27;</span>,&#123;<span class="string">&#x27;X&#x27;</span>:A, <span class="string">&#x27;Y&#x27;</span>:B&#125;)</span><br></pre></td></tr></table></figure></div>
-
-<ul>
-<li>matlab中读写.mat数据文件</li>
-</ul>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">load PythonData</span><br><span class="line"></span><br><span class="line">save MatlabData            <span class="comment">#保存全部变量</span></span><br><span class="line">save MatlabData A B;       <span class="comment">#保存指定变量A、B</span></span><br><span class="line">save (<span class="string">&#x27;MatlabData.mat&#x27;</span>, <span class="string">&#x27;A&#x27;</span>,<span class="string">&#x27;B&#x27;</span>);</span><br></pre></td></tr></table></figure></div>
-
-<ul>
-<li><a class="link"   href="https://links.jianshu.com/go?to=https://www.cnblogs.com/mppp/p/12067442.html" >c++读写.mat数据文件麻烦一些 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
-</ul>
-<h4 id="二、张量的理解"><a href="#二、张量的理解" class="headerlink" title="二、张量的理解"></a>二、张量的理解</h4><h5 id="2-1-初始化张量"><a href="#2-1-初始化张量" class="headerlink" title="2.1 初始化张量"></a>2.1 初始化张量</h5><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 定义一个随机数（标量）</span></span><br><span class="line">random_float = tf.random.uniform(shape=())</span><br><span class="line"><span class="comment"># 定义一个有2个元素的零向量</span></span><br><span class="line">zero_vector = tf.zeros(shape=(2))</span><br><span class="line"><span class="comment"># 定义两个2×2的常量矩阵</span></span><br><span class="line">A = tf.constant([[1., 2.], [3., 4.]])</span><br></pre></td></tr></table></figure></div>
-
-<h5 id="2-2-输出张量特征"><a href="#2-2-输出张量特征" class="headerlink" title="2.2 输出张量特征"></a>2.2 输出张量特征</h5><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看矩阵A的形状、类型和值</span></span><br><span class="line"><span class="built_in">print</span>(A.shape)      <span class="comment"># 输出(2, 2)，即矩阵的长和宽均为2</span></span><br><span class="line"><span class="built_in">print</span>(A.dtype)      <span class="comment"># 输出&lt;dtype: &#x27;float32&#x27;&gt;</span></span><br><span class="line"><span class="built_in">print</span>(A.numpy())    <span class="comment"># 输出[[1. 2.]</span></span><br><span class="line">                    <span class="comment">#      [3. 4.]]</span></span><br></pre></td></tr></table></figure></div>
-
-<h5 id="2-3-基本张量操作"><a href="#2-3-基本张量操作" class="headerlink" title="2.3 基本张量操作"></a>2.3 基本张量操作</h5><div class="highlight-container" data-rel="Csharp"><figure class="iseeu highlight csharp"><table><tr><td class="code"><pre><span class="line">C = tf.<span class="keyword">add</span>(A, B)      <span class="meta"># 计算矩阵A和B的和</span></span><br><span class="line">D = tf.matmul(A, B)   <span class="meta"># 计算矩阵A和B的乘积</span></span><br><span class="line">E = tf.mutiply(A, <span class="number">1</span>)  <span class="meta"># 计算矩阵A与1的数乘</span></span><br><span class="line">tf.square(x)          <span class="meta"># 对张量x每个元素平方，并返回同维度张量</span></span><br><span class="line">tf.log(x)             <span class="meta"># 对张量x每个元素求自然对数，同上</span></span><br><span class="line"></span><br><span class="line">tf.reduce_sum(x)      <span class="meta"># 对所有元素求和，返回0维张量(标量)</span></span><br><span class="line"><span class="meta"># tf.reduce_sum(x,0)  # 求列和(纵向求和)</span></span><br><span class="line"><span class="meta"># tf.reduce_sum(x,1)  # 求行和(横向求和)</span></span><br><span class="line">tf.reduce_mean()      <span class="meta"># 用法类似于tf.reduce_sum、tf.reduce_max</span></span><br></pre></td></tr></table></figure></div>
-
-<h6 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h6><ol>
-<li><a class="link"   href="https://links.jianshu.com/go?to=https://tf.wiki/zh/basic/basic.html" >简单粗暴TensorFlow2.0 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
-<li><a class="link"   href="https://links.jianshu.com/go?to=https://tensorflow.google.cn/tutorials/customization/basics" >TensorFlow2.0 tutorials <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
-<li><a class="link"   href="https://links.jianshu.com/go?to=https://www.cnblogs.com/chenhuabin/p/11594239.html" >张量的数学运算 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
-</ol>
-]]></content>
-      <categories>
-        <category>Programing</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-        <tag>Matlab</tag>
-        <tag>Tensorflow</tag>
-        <tag>Machine Learning</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>python隐性马尔科夫模型案例分析</title>
     <url>/2023/02/28/markov/</url>
     <content><![CDATA[<h2 id="问题"><a href="#问题" class="headerlink" title="问题:"></a>问题:</h2><p>什么是马尔科夫模型?用来干什么?<br>大家可以参考这篇简书</p>
@@ -102,6 +61,47 @@
       <tags>
         <tag>Python</tag>
         <tag>Machine Learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>TensorFlow2 读写matlab变量 &amp; 张量操作</title>
+    <url>/2023/02/28/matlab/</url>
+    <content><![CDATA[<blockquote>
+<p>在科研中，matlab对矩阵处理有优势，而python语言对神经网络热门框架，譬如TensorFlow、Pytorch等都支持，所以难免会有需要跨平台处理。本文主要分享一种简便的处理方法：在.mat格式的文件中写入读取数据，因为.mat格式matlab和python都支持。</p>
+</blockquote>
+<h4 id="一、读写matlab变量"><a href="#一、读写matlab变量" class="headerlink" title="一、读写matlab变量"></a>一、读写matlab变量</h4><ul>
+<li>python中读写.mat数据文件</li>
+</ul>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> scipy.io <span class="keyword">as</span> io</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将.mat文件读取为字典变量InputData</span></span><br><span class="line">InputData = io.loadmat(<span class="string">&#x27;MatlabData.mat&#x27;</span>)</span><br><span class="line"><span class="comment"># 从字典变量中读取变量</span></span><br><span class="line">A = tf.constant(InputData[<span class="string">&#x27;A&#x27;</span>])</span><br><span class="line">A = tf.cast(A, dtype = tf.float32)</span><br><span class="line">B = tf.constant(InputData[<span class="string">&#x27;B&#x27;</span>]) </span><br><span class="line">......</span><br><span class="line">A = np.mat(A.numpy())</span><br><span class="line">B = np.mat(B.numpy())</span><br><span class="line"><span class="comment"># 将变量A保存为X，将变量B保存为Y，并写入到.mat文件</span></span><br><span class="line">io.savemat(<span class="string">&#x27;PythonData.mat&#x27;</span>,&#123;<span class="string">&#x27;X&#x27;</span>:A, <span class="string">&#x27;Y&#x27;</span>:B&#125;)</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li>matlab中读写.mat数据文件</li>
+</ul>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">load PythonData</span><br><span class="line"></span><br><span class="line">save MatlabData            <span class="comment">#保存全部变量</span></span><br><span class="line">save MatlabData A B;       <span class="comment">#保存指定变量A、B</span></span><br><span class="line">save (<span class="string">&#x27;MatlabData.mat&#x27;</span>, <span class="string">&#x27;A&#x27;</span>,<span class="string">&#x27;B&#x27;</span>);</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li><a class="link"   href="https://links.jianshu.com/go?to=https://www.cnblogs.com/mppp/p/12067442.html" >c++读写.mat数据文件麻烦一些 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ul>
+<h4 id="二、张量的理解"><a href="#二、张量的理解" class="headerlink" title="二、张量的理解"></a>二、张量的理解</h4><h5 id="2-1-初始化张量"><a href="#2-1-初始化张量" class="headerlink" title="2.1 初始化张量"></a>2.1 初始化张量</h5><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 定义一个随机数（标量）</span></span><br><span class="line">random_float = tf.random.uniform(shape=())</span><br><span class="line"><span class="comment"># 定义一个有2个元素的零向量</span></span><br><span class="line">zero_vector = tf.zeros(shape=(2))</span><br><span class="line"><span class="comment"># 定义两个2×2的常量矩阵</span></span><br><span class="line">A = tf.constant([[1., 2.], [3., 4.]])</span><br></pre></td></tr></table></figure></div>
+
+<h5 id="2-2-输出张量特征"><a href="#2-2-输出张量特征" class="headerlink" title="2.2 输出张量特征"></a>2.2 输出张量特征</h5><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看矩阵A的形状、类型和值</span></span><br><span class="line"><span class="built_in">print</span>(A.shape)      <span class="comment"># 输出(2, 2)，即矩阵的长和宽均为2</span></span><br><span class="line"><span class="built_in">print</span>(A.dtype)      <span class="comment"># 输出&lt;dtype: &#x27;float32&#x27;&gt;</span></span><br><span class="line"><span class="built_in">print</span>(A.numpy())    <span class="comment"># 输出[[1. 2.]</span></span><br><span class="line">                    <span class="comment">#      [3. 4.]]</span></span><br></pre></td></tr></table></figure></div>
+
+<h5 id="2-3-基本张量操作"><a href="#2-3-基本张量操作" class="headerlink" title="2.3 基本张量操作"></a>2.3 基本张量操作</h5><div class="highlight-container" data-rel="Csharp"><figure class="iseeu highlight csharp"><table><tr><td class="code"><pre><span class="line">C = tf.<span class="keyword">add</span>(A, B)      <span class="meta"># 计算矩阵A和B的和</span></span><br><span class="line">D = tf.matmul(A, B)   <span class="meta"># 计算矩阵A和B的乘积</span></span><br><span class="line">E = tf.mutiply(A, <span class="number">1</span>)  <span class="meta"># 计算矩阵A与1的数乘</span></span><br><span class="line">tf.square(x)          <span class="meta"># 对张量x每个元素平方，并返回同维度张量</span></span><br><span class="line">tf.log(x)             <span class="meta"># 对张量x每个元素求自然对数，同上</span></span><br><span class="line"></span><br><span class="line">tf.reduce_sum(x)      <span class="meta"># 对所有元素求和，返回0维张量(标量)</span></span><br><span class="line"><span class="meta"># tf.reduce_sum(x,0)  # 求列和(纵向求和)</span></span><br><span class="line"><span class="meta"># tf.reduce_sum(x,1)  # 求行和(横向求和)</span></span><br><span class="line">tf.reduce_mean()      <span class="meta"># 用法类似于tf.reduce_sum、tf.reduce_max</span></span><br></pre></td></tr></table></figure></div>
+
+<h6 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h6><ol>
+<li><a class="link"   href="https://links.jianshu.com/go?to=https://tf.wiki/zh/basic/basic.html" >简单粗暴TensorFlow2.0 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+<li><a class="link"   href="https://links.jianshu.com/go?to=https://tensorflow.google.cn/tutorials/customization/basics" >TensorFlow2.0 tutorials <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+<li><a class="link"   href="https://links.jianshu.com/go?to=https://www.cnblogs.com/chenhuabin/p/11594239.html" >张量的数学运算 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>Programing</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+        <tag>Machine Learning</tag>
+        <tag>Matlab</tag>
+        <tag>Tensorflow</tag>
       </tags>
   </entry>
   <entry>

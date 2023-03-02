@@ -8,9 +8,9 @@ https://www.cobaltyang.me/2023/02/28/markov/
 https://www.cobaltyang.me/about/index.html
 https://www.cobaltyang.me/
 https://www.cobaltyang.me/tags/Python/
+https://www.cobaltyang.me/tags/Machine-Learning/
 https://www.cobaltyang.me/tags/Matlab/
 https://www.cobaltyang.me/tags/Tensorflow/
-https://www.cobaltyang.me/tags/Machine-Learning/
 https://www.cobaltyang.me/tags/R/
 https://www.cobaltyang.me/categories/Daily-Life/
 https://www.cobaltyang.me/categories/Programing/
