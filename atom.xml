@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2023-03-02T02:48:54.246Z</updated>
+  <updated>2023-03-02T03:16:32.334Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="http://example.com/2023/03/01/begin/"/>
     <id>http://example.com/2023/03/01/begin/</id>
     <published>2023-03-01T07:26:43.000Z</published>
-    <updated>2023-03-02T02:48:54.246Z</updated>
+    <updated>2023-03-02T03:16:32.334Z</updated>
     
     <content type="html"><![CDATA[<h2 id="Here-I-want-to-talk-about-the-birth-of-this-personal-blog"><a href="#Here-I-want-to-talk-about-the-birth-of-this-personal-blog" class="headerlink" title="Here, I want to talk about the birth of this personal blog."></a>Here, I want to talk about the birth of this personal blog.</h2>]]></content>
     
